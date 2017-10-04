@@ -1,2 +1,8 @@
 *.class
 *.log
+
+# sbt specific
+target/
+
+# IDEA specific
+.idea*/
