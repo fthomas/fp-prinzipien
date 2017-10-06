@@ -1,4 +1,4 @@
-package prinzipien
+package prinzipien.io
 
 object App2 {
   val program: ConsoleIO1[Unit] =

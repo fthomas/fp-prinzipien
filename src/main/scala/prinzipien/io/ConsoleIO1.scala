@@ -1,4 +1,4 @@
-package prinzipien
+package prinzipien.io
 
 sealed abstract class ConsoleIO1[A] {
   def flatMap[B](f: A => ConsoleIO1[B]): ConsoleIO1[B] = ConsoleIO1.FlatMap(this, f)
