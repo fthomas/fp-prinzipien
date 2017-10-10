@@ -1,14 +1,18 @@
 package prinzipien.io
 
-import prinzipien.io.ConsoleIO1._
+import prinzipien.io.ConsoleIO2._
 
 object Interpreter1 {
-  def run[A](p: ConsoleIO1[A]): A =
-    p match {
-      case ReadLine() => scala.Console.readLine()
-      case PrintLine(string) => scala.Console.println(string)
+  def unsafeRun[A](self: ConsoleIO2[A]): A =
+    self match {
+      case ReadLine() =>
+        scala.Console.readLine()
+
+      case PrintLine(string) =>
+        scala.Console.println(string)
+
       case FlatMap(fa, f) =>
-        val a = run(fa)
-        run(f(a))
+        val a = unsafeRun(fa)
+        unsafeRun(f(a))
     }
 }

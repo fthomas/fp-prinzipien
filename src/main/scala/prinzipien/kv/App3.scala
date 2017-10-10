@@ -19,4 +19,7 @@ object App3 {
       _ <- Put("lastname", "Thomas")
       pet <- Get("pet")
     } yield pet.getOrElse("kein Haustier")
+
+  def main(args: Array[String]): Unit =
+    println(Interpreter2.run(program2).apply(Map("hometown" -> "Neusäß")))
 }

@@ -2,9 +2,9 @@ package prinzipien.kv
 
 import prinzipien.kv.KVStore2._
 
-sealed abstract class KVStore2[A] {
+sealed trait KVStore2[A] {
   def flatMap[B](f: A => KVStore2[B]): KVStore2[B] = FlatMap(this, f)
-  def map[B](f: A => B): KVStore2[B] = FlatMap(this, f.andThen(Pure.apply))
+  def map[B](f: A => B): KVStore2[B] = flatMap(f.andThen(Pure.apply))
 }
 
 object KVStore2 {

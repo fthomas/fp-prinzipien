@@ -7,8 +7,8 @@ object App2 {
     Put("firstname", "Frank").flatMap { _ =>
       Put("lastname", "Thomas").flatMap { _ =>
         Get("pet").flatMap {
-          case Some(pet) => ??? // return pet
-          case None => ??? // return "none"
+          case Some(pet) => ??? // pet
+          case None => ??? // "kein Haustier"
         }
       }
     }

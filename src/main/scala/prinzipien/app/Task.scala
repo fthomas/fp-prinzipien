@@ -1,8 +1,8 @@
 package prinzipien.app
 
-import prinzipien.app.Task.FlatMap
+import prinzipien.app.Task._
 
-sealed abstract class Task[A] {
+sealed trait Task[A] {
   def flatMap[B](f: A => Task[B]): Task[B] =
     FlatMap(this, f)
 }
