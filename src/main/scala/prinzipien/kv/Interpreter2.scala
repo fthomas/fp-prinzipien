@@ -24,4 +24,20 @@ object Interpreter2 {
       case Pure(a) =>
         store => (store, a)
     }
+
+  def unsafeRun[A](p: KVStore2[A]): A =
+    p match {
+      case Get(key) =>
+        Option(java.lang.System.getProperty(key))
+
+      case Put(key, value) =>
+        java.lang.System.setProperty(key, value)
+        ()
+
+      case FlatMap(fa, f) =>
+        val a = unsafeRun(fa)
+        unsafeRun(f(a))
+
+      case Pure(a) => a
+    }
 }
