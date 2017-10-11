@@ -3,7 +3,7 @@ package prinzipien.kv
 import prinzipien.kv.KVStore1._
 
 object App2 {
-  val program: KVStore1[Option[String]] =
+  val program: KVStore1[String] =
     Put("firstname", "Frank").flatMap { _ =>
       Put("lastname", "Thomas").flatMap { _ =>
         Get("pet").flatMap {
