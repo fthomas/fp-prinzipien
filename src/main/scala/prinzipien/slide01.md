@@ -1,0 +1,7 @@
+# Kernprinzipien
+
+* Funktionen
+
+* Typen
+
+* Komposition

@@ -1,14 +1,3 @@
-
-## Intro
-
-* was ist FP
-* programmieren mit reinen Funktion. Beispiele was nicht reine Funktionen
-  sind.
-* FP ist eine Einschränkung wie wir Programme schreiben und nicht welche.
-*
-
-
-
 Aufgabe: Wir wollen ein kleines rein funktionales Programm schreiben,
 dass mit dem Benutzer interagiert und eine "DB" verwendet.
 
@@ -105,11 +94,11 @@ interaktiv einen Key-Value-Store abfragen und modifizieren kann.
 * Wir müssen Operationen von beiden Sprachen in eine gemeinsame Sprache übersetzen.
   Dazu überlegen wir uns einen Datentyp in den wir sowohl ConsoleIO als auch KVStore
   Operationen übersetzen können.
-  
+
 * Task: kapselt beliebige Seiteneffekte in Delay.
 
 * Interpreter zeigt wie ConsoleIO und KVStore in Task übersetzt werden kann. Dies sind
   reine Funktionen. Die einzige nicht-rt Funktion ist unsafeRun: Task[A] => A weil hier
   Funktionen in Delay ausgeführt werden.
-  
+
 * App: Programm zeigen und demonstrieren 
