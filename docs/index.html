@@ -26,17 +26,17 @@ class: center, middle
 
 ---
 
-# Kernprinzipien
+# Kernprinzipien typisierter, funktionaler Programmierung
 
 **Funktionen**
   * sind *auch nur* Werte und können Parameter oder Rückgabewerte sein
 
-**Typen**
-  * abc
-
 **Komposition**
-  * größere Komponenten können aus kleineren zusammengesetzt werden
-  * Komponenten können isoliert verwendet und verstanden werden
+  * größere Komponenten können aus Kleineren zusammengesetzt werden
+  * Komponenten können isoliert verwendet, verstanden und getestet werden
+
+**Typen**
+  * `f: A => B`, `g: B => C` => `a => g(f(a)): A => C`
 
 ???
 
@@ -44,7 +44,9 @@ Funktionen:
 * leichtgewichtige Syntax
 
 Komposition:
-* Komponenten / Werte/ Funktionen / Programme
+* Komponenten / Werte/ Funktionen / Programme / Typen (ADT)
+* reine Funktionen sind zusammensetzbar da ihre Logik vom Erlangen der Eingaben
+  und der Interpretation des Ergebnis getrennt werden
 
 ---
 
