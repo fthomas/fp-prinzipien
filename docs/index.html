@@ -28,29 +28,31 @@ class: center, middle
 
 # Prinzipien typisierter, funktionaler Programmierung
 
-**Reine Funktionen**
+**Funktionen**
   * sind *auch nur* Werte und können Parameter oder Rückgabewerte sein
-  * und führen keine Effekte nebenbei aus
 
 **Komposition**
   * größere Komponenten können aus Kleineren zusammengesetzt werden
-  * Komponenten können isoliert verwendet und getestet werden
 
 **Typen**
   * sind Dokumentation und leiten uns bei der Implementierung
-  * Bsp.: gesucht ist `A => C`; vorhanden ist `f: A => B` und `g: B => C`; einzige Lösung `a => g(f(a))`
 
 ???
 
 Funktionen:
+* und führen keine Effekte nebenbei aus      
 * können auch Variablen zugewiesen werden
 * leichtgewichtige Syntax
 
 Komposition:
+* Komponenten können isoliert verwendet und getestet werden
 * Komponenten / Werte/ Funktionen / Programme / Typen (ADT)
 * reine Funktionen sind zusammensetzbar da ihre Logik vom Erlangen der Eingaben
   und der Interpretation des Ergebnis getrennt werden
 * kleinere Komponenten können auch isoliert verstanden werden
+
+Typen:
+* Bsp.: gesucht ist `A => C`; vorhanden ist `f: A => B` und `g: B => C`; einzige Lösung `a => g(f(a))`
 
 ---
 
