@@ -8,7 +8,7 @@ object App {
   def prompt(line: String): Task[Unit] = {
     val tokens = line.split(' ')
     tokens.lift(0) match {
-      case Some("get") =>
+      case Some("get") if line.length > 4 =>
         val key = line.substring(4)
         Get(key).toTask.flatMap {
           case Some(value) => PrintLine(value).toTask

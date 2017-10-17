@@ -7,7 +7,7 @@ object App1 {
     PrintLine("Awesome Greeter v1.0").flatMap { _ =>
       PrintLine("What is your name?").flatMap { _ =>
         ReadLine().flatMap { name =>
-          PrintLine(s"Hello, $name!")
+          PrintLine(s"Hallo, $name!")
         }
       }
     }
