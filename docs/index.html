@@ -85,28 +85,35 @@ aber nicht <i>welche</i> wir schreiben können
 Alles was eine Funktion macht wird durch deren Rückgabewert repräsentiert.  
 
 * Funktionen sind einfacher zu verstehen
+
 * Testbarkeit
+
 * Komposition
+
 * Refactoring
+
 * FP macht glücklich
 
 ???
 
-* Eine Funktion beschreibt was man will anstatt zu sagen wie man es bekommt.
 * Einfacher zu verstehen, weil ihre Logik vom Erlangen der Eingaben und der Interpretation getrennt ist
-* Zum Testen reicht es die Rückgabewerte zu inspizieren - es sind keine Mocks oder Spies nötig.
+
+* Zum Testen reicht es die Rückgabewerte zu inspizieren - es sind keine Mocks oder Spies nötig
+
 * Da keine Seiteneffekte ausgeführt werden ist es einfacher Komponenten wiederzuverwenden
-  und miteinander zu kombinieren.
+  und miteinander zu kombinieren
+
 * Da keine Seiteneffekte ausgeführt werden, kann man Ausdrücke Variablen zuweisen und gleiche
-  Ausdrücke durch die Variable ersetzen.
+  Ausdrücke durch die Variable ersetzen
+
+* man schafft verständliche, wiederverwendbare und einfach zu testende Komponenten
 
 ---
 class: center, middle
 
-# Praxisbeispiel
+# Beispiel
 
-Wir wollen ein kleines rein funktionales Programm schreiben, dass mit dem Benutzer interagiert
-und einen Key Value Store verwendet.
+Eine minimalistische Shell für eine Key-Value-Datenbank
 
 ---
 
