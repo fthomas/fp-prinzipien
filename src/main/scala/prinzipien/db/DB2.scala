@@ -1,6 +1,7 @@
 package prinzipien.db
 
 import prinzipien.db.DB2.{FlatMap, HandleErrorWith, Pure}
+import scala.annotation.tailrec
 
 sealed trait DB2[+A] {
   final def flatMap[B](f: A => DB2[B]): DB2[B] =
@@ -26,27 +27,27 @@ object DB2 {
   val unit: DB2[Unit] = Pure(())
 
   def runDB[A](dbA: DB2[A]): A = {
+    @tailrec
     def loop(
         curr: DB2[Any],
-        valueStack: List[Any => DB2[Any]],
-        dropCount: Int,
-        errorStack: List[Throwable => DB2[Any]],
+        stack: List[Either[Throwable => DB2[Any], Any => DB2[Any]]],
         error: Option[Throwable],
         db: Map[String, Int]
     ): Any = {
       error match {
         case Some(e) =>
-          errorStack match {
-            case Nil    => throw e
-            case h :: t => loop(h(e), valueStack.drop(dropCount), 0, t, None, db)
+          stack match {
+            case Nil           => throw e
+            case Left(h) :: t  => loop(h(e), t, None, db)
+            case Right(_) :: t => loop(DB2.unit, t, error, db)
           }
         case None =>
           curr match {
-            case FlatMap(fa, f)         => loop(fa, f :: valueStack, dropCount + 1, errorStack, None, db)
-            case RaiseError(e)          => loop(DB2.unit, valueStack, dropCount, errorStack, Some(e), db)
-            case HandleErrorWith(fa, f) => loop(fa, valueStack, 0, f :: errorStack, None, db)
+            case FlatMap(fa, f)         => loop(fa, Right(f) :: stack, None, db)
+            case RaiseError(e)          => loop(DB2.unit, stack, Some(e), db)
+            case HandleErrorWith(fa, f) => loop(fa, Left(f) :: stack, None, db)
             case _ =>
-              val v = curr match {
+              def v = curr match {
                 case Get(key)              => db.get(key)
                 case Put(_, _)             => ()
                 case Pure(a)               => a
@@ -54,19 +55,19 @@ object DB2 {
                 case RaiseError(_)         => sys.error("impossible")
                 case HandleErrorWith(_, _) => sys.error("impossible")
               }
-              valueStack match {
-                case Nil => v
-                case h :: t =>
+              stack match {
+                case Nil          => v
+                case Left(_) :: t => loop(curr, t, None, db)
+                case Right(h) :: t =>
                   curr match {
-                    case Put(key, value) =>
-                      loop(h(()), t, dropCount, errorStack, None, db.updated(key, value))
-                    case _ => loop(h(v), t, dropCount, errorStack, None, db)
+                    case Put(key, value) => loop(h(v), t, None, db.updated(key, value))
+                    case _               => loop(h(v), t, None, db)
                   }
               }
           }
       }
     }
-    loop(dbA, List.empty, 0, List.empty, Option.empty, Map.empty).asInstanceOf[A]
+    loop(dbA, List.empty, Option.empty, Map.empty).asInstanceOf[A]
   }
 
   def main(args: Array[String]): Unit = {
@@ -86,14 +87,14 @@ object DB2 {
       .map(identity)
       .handleErrorWith(_ => Pure("world 6"))
 
-    val progx = (for {
+    val prog7 = (for {
       _ <- Put("frank", 4)
       v <- Get("frank").map(_.getOrElse(0))
+      _ <- RaiseError[Unit](new Throwable("boom"))
       _ <- Put("foo", 1)
       v2 <- Get("foo").map(_.getOrElse(3))
-      _ <- RaiseError[Unit](new Throwable("boom"))
-    } yield v + v2).handleErrorWith(_ => Get("frank"))
+    } yield v + v2).handleErrorWith(_ => Get("frank").map(_.map(_ + 7)))
 
-    println(runDB(prog5.flatMap(_ => prog6)))
+    println(runDB(prog7))
   }
 }
