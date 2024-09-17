@@ -31,48 +31,41 @@ object DB2 {
     def loop(
         curr: DB2[Any],
         stack: List[Either[Throwable => DB2[Any], Any => DB2[Any]]],
-        error: Option[Throwable],
         db: Map[String, Int]
-    ): Any = {
-      error match {
-        case Some(e) =>
+    ): Any =
+      curr match {
+        case FlatMap(fa, f)         => loop(fa, Right(f) :: stack, db)
+        case HandleErrorWith(fa, f) => loop(fa, Left(f) :: stack, db)
+        case RaiseError(e) =>
           stack match {
             case Nil           => throw e
-            case Left(h) :: t  => loop(h(e), t, None, db)
-            case Right(_) :: t => loop(DB2.unit, t, error, db)
+            case Left(h) :: t  => loop(h(e), t, db)
+            case Right(_) :: t => loop(curr, t, db)
           }
-        case None =>
-          curr match {
-            case FlatMap(fa, f)         => loop(fa, Right(f) :: stack, None, db)
-            case RaiseError(e)          => loop(DB2.unit, stack, Some(e), db)
-            case HandleErrorWith(fa, f) => loop(fa, Left(f) :: stack, None, db)
-            case _ =>
-              def v = curr match {
-                case Get(key)              => db.get(key)
-                case Put(_, _)             => ()
-                case Pure(a)               => a
-                case FlatMap(_, _)         => sys.error("impossible")
-                case RaiseError(_)         => sys.error("impossible")
-                case HandleErrorWith(_, _) => sys.error("impossible")
-              }
-              stack match {
-                case Nil          => v
-                case Left(_) :: t => loop(curr, t, None, db)
-                case Right(h) :: t =>
-                  curr match {
-                    case Put(key, value) => loop(h(v), t, None, db.updated(key, value))
-                    case _               => loop(h(v), t, None, db)
-                  }
+        case _ =>
+          def v = curr match {
+            case Get(key)              => db.get(key)
+            case Put(_, _)             => ()
+            case Pure(a)               => a
+            case FlatMap(_, _)         => sys.error("impossible")
+            case RaiseError(_)         => sys.error("impossible")
+            case HandleErrorWith(_, _) => sys.error("impossible")
+          }
+          stack match {
+            case Nil          => v
+            case Left(_) :: t => loop(curr, t, db)
+            case Right(h) :: t =>
+              curr match {
+                case Put(key, value) => loop(h(v), t, db.updated(key, value))
+                case _               => loop(h(v), t, db)
               }
           }
       }
-    }
-    loop(dbA, List.empty, Option.empty, Map.empty).asInstanceOf[A]
+
+    loop(dbA, List.empty, Map.empty).asInstanceOf[A]
   }
 
   def main(args: Array[String]): Unit = {
-    // 7:37
-
     val prog1 = RaiseError[Unit](new Throwable("boom 1"))
     val prog2 = RaiseError[Unit](new Throwable("boom 2")).handleErrorWith(_ => Pure("hello"))
     val prog3 = RaiseError[Unit](new Throwable("boom 3")).handleErrorWith(_ => Get("hello"))
